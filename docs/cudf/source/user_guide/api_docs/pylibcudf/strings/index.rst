@@ -6,3 +6,5 @@ strings
 
     contains
     replace
+    slice
+    strip

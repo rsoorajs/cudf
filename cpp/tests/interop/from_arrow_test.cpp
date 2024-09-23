@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+// These interop functions are deprecated. We keep the code in this
+// test and will migrate the tests to export the arrow C data
+// interface which we consume with from_arrow_host. For now, the tests
+// are commented out.
+
+#if 0
+
 #include <tests/interop/arrow_utils.hpp>
 
 #include <cudf_test/base_fixture.hpp>
@@ -50,7 +57,8 @@ std::unique_ptr<cudf::table> get_cudf_table()
                                                               {true, false, true, true, true});
   columns.emplace_back(std::move(cudf::dictionary::encode(col4)));
   columns.emplace_back(cudf::test::fixed_width_column_wrapper<bool>(
-                         {true, false, true, false, true}, {true, false, true, true, false}).release());
+                         {true, false, true, false, true}, {true, false, true, true, false})
+                         .release());
   columns.emplace_back(cudf::test::strings_column_wrapper(
                          {
                            "",
@@ -338,7 +346,7 @@ TEST_F(FromArrowTest, ChunkedArray)
     std::vector<std::shared_ptr<arrow::Array>>{dict_array1, dict_array2});
   auto boolean_array =
     get_arrow_array<bool>({true, false, true, false, true}, {true, false, true, true, false});
-  auto boolean_chunked_array = std::make_shared<arrow::ChunkedArray>(boolean_array);
+  auto boolean_chunked_array      = std::make_shared<arrow::ChunkedArray>(boolean_array);
   auto large_string_chunked_array = std::make_shared<arrow::ChunkedArray>(
     std::vector<std::shared_ptr<arrow::Array>>{large_string_array_1});
 
@@ -594,3 +602,5 @@ TEST_F(FromArrowStructScalarTest, Basic)
 
   CUDF_TEST_EXPECT_TABLES_EQUAL(lhs, cudf_struct_scalar->view());
 }
+
+#endif
